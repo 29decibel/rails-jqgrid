@@ -6,7 +6,7 @@ This is a rails plugin dedicated to the great jqGrid javascript widget. I had tw
 Usage Instructions:
 
 //For the grid theme
-<%= jqgrid_theme("theme-name") %>
+<%= jqgrid_init %>
 //For the grid
 <%= jqgrid(Model,[optional standard jqGrid options here])) %>
 

@@ -1,5 +1,7 @@
 class GridDataController < ApplicationController
-  def index
+  protect_from_forgery
+  respond_to :json
+  def from_model
     model = eval(params["model"])
     fields = params["fields"].split(",")
     
@@ -12,7 +14,7 @@ class GridDataController < ApplicationController
     rows = model.find(:all,find)
     row_count = model.count(:all,:conditions => find[:conditions])
     
-    render :json => rows.to_jqgrid_json(
+    respond_with rows.to_jqgrid_json(
       params["fields"],#fields
       row_count,#total records
       params["rows"].to_i,#rows per page
@@ -22,7 +24,7 @@ class GridDataController < ApplicationController
   def filter_bar_conditions(fields,params)
     conditions = ""
     fields.each do |field|
-      conditions << "#{field} LIKE '#{params[field]}%' AND " unless params[field].nil?
+      conditions << "#{field} LIKE '%#{params[field]}%' AND " unless params[field].nil?
     end
     conditions.chomp("AND ")
   end

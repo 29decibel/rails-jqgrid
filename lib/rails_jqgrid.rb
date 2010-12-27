@@ -5,42 +5,36 @@
 # Need an on click function for rows
 module ActionView
   module Helpers
+    # jqgrid Dep,:fields=>'code,name'
     def jqgrid(model,opt={})
       
       #Random HTML id
       opt[:id] ||= model.to_s.pluralize + '_' + rand(36**4).to_s(36)
       
-      #Default Grid options Begin
+      #Default Grid options Begin ,make a merge of the fields
       opt[:fields] ||= model.column_names.to_s
       opt[:caption] ||= model.human_name #here i use the human_name for the i18n reason
       id = opt[:caption].parameterize
-      opt[:url] ||=  %Q(/grid_data?model=#{model.to_s}&fields=#{opt[:fields]})
+      opt[:url] ||=  %Q(/grid_data/from_model?model=#{model.to_s}&fields=#{opt[:fields]})
       opt[:datatype] ||= "json"
-      opt[:colNames] ||= opt[:fields].split(",").collect {|col| col.titleize}
+      opt[:colNames] ||= opt[:fields].split(",").collect {|col| model.human_attribute_name col}
       opt[:colModel] ||= fields_to_colmodel(opt[:fields])
-      opt[:pager] ||= "#jQuery('##{opt[:id]}_pager')" #The '#' at the start marks the string as a function, else it will be a string in json
-      opt[:rowNum] ||= 10
-      opt[:rowList] ||= [100,200,300]
+      opt[:pager] ||= "##{opt[:id]}_pager" #The '#' at the start marks the string as a function, else it will be a string in json
+      opt[:rowNum] ||= 20
+      opt[:rowList] ||= [20,40,60]
       opt[:viewrecords] ||= true
-      opt[:ondblClickRow] ||= %Q(#
-      function(rowId, iRow, iCol, e)
-      {
-        if(rowId)
-        {
-          window.location = '#{url_for(:controller => model.name.pluralize,:action => 'show')}' + '/' + rowId;
-        }
-      }
-      )
+      opt[:ondblClickRow] ||= '#function(rowId, iRow, iCol, e) { alert(rowId);}'
+      #if(rowId){ window.location = '#{model.name.pluralize}/show/}' + rowId;
       #Default Grid opt End
       
       opt[:pager_opt] = {}
       #Default Pager options Begin
-      opt[:pager_opt][:edit] ||= false
-      opt[:pager_opt][:add] ||= false
-      opt[:pager_opt][:del] ||= false
-      opt[:pager_opt][:search] ||= false
-      opt[:pager_opt][:refresh] ||= false
-      opt[:pager_opt][:view] ||= false
+      opt[:pager_opt][:edit] ||= true
+      opt[:pager_opt][:add] ||= true
+      opt[:pager_opt][:del] ||= true
+      opt[:pager_opt][:search] ||= true
+      opt[:pager_opt][:refresh] ||= true
+      opt[:pager_opt][:view] ||= true
       opt[:pager_opt][:editoptions] ||= ""
       opt[:pager_opt][:addoptions] ||= ""
       opt[:pager_opt][:deleteoptions] ||= ""
@@ -48,7 +42,7 @@ module ActionView
       #Default Pager options End
       
       #Grid Javascript Begin
-      %Q(
+      raw %Q(
         <script type="text/javascript">
         
           jQuery(document).ready(function(){
@@ -64,12 +58,14 @@ module ActionView
           {#{opt[:pager_opt][:searchoptions]}}
           );
           
-          main_grid.filterToolbar();
+          //main_grid.filterToolbar();
           
         });
         </script>
-        <table id="#{opt[:id]}" class="scroll ui-state-default" cellpadding="0" cellspacing="0"></table>
-        <div id="#{opt[:id]}_pager" class="scroll" style="text-align:center;"></div>
+        <div class="jqgrid">
+      		<table id="#{opt[:id]}" class="scroll ui-state-default" cellpadding="0" cellspacing="0"></table>
+          <div id="#{opt[:id]}_pager" class="scroll" style="text-align:center;"></div>
+      	</div>
       )
       #Grid Javascript End
     end
@@ -83,12 +79,12 @@ module ActionView
       colmodel
     end
     
-    def jqgrid_init(locale=cn)
+    def jqgrid_init(locale="cn")
       #includes = capture { stylesheet_link_tag "jqgrid/#{theme}/jquery-ui-1.7.2.custom" }
       #includes << capture { stylesheet_link_tag "jqgrid/ui.jqgrid" }
-      includes << capture { javascript_include_tag "jqgrid/jquery-1.4.2.min" }
-      includes << capture { javascript_include_tag "jqgrid/jquery.jqGrid.min" }
+      includes = capture { javascript_include_tag "jqgrid/jquery-1.4.2.min" }
       includes << capture { javascript_include_tag "jqgrid/i18n/grid.locale-#{locale}" }
+      includes << capture { javascript_include_tag "jqgrid/jquery.jqGrid.min" }
       includes
     end
   end
