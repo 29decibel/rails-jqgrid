@@ -12,7 +12,7 @@ module ActionView
       
       #Default Grid options Begin
       opt[:fields] ||= model.column_names.to_s
-      opt[:caption] ||= model.to_s.titleize.pluralize
+      opt[:caption] ||= model.human_name #here i use the human_name for the i18n reason
       id = opt[:caption].parameterize
       opt[:url] ||=  %Q(/grid_data?model=#{model.to_s}&fields=#{opt[:fields]})
       opt[:datatype] ||= "json"
@@ -83,12 +83,12 @@ module ActionView
       colmodel
     end
     
-    def jqgrid_theme(theme)
-      includes = capture { stylesheet_link_tag "jqgrid/#{theme}/jquery-ui-1.7.2.custom" }
-      includes << capture { stylesheet_link_tag "jqgrid/ui.jqgrid" }
-      includes << capture { javascript_include_tag "jqgrid/jquery-1.3.2.min" }
+    def jqgrid_init(locale=cn)
+      #includes = capture { stylesheet_link_tag "jqgrid/#{theme}/jquery-ui-1.7.2.custom" }
+      #includes << capture { stylesheet_link_tag "jqgrid/ui.jqgrid" }
+      includes << capture { javascript_include_tag "jqgrid/jquery-1.4.2.min" }
       includes << capture { javascript_include_tag "jqgrid/jquery.jqGrid.min" }
-      includes << capture { javascript_include_tag "jqgrid/i18n/grid.locale-en" }
+      includes << capture { javascript_include_tag "jqgrid/i18n/grid.locale-#{locale}" }
       includes
     end
   end
@@ -136,7 +136,7 @@ end
 
 class String
   def to_json(options = nil)
-    #If the '#' symbol is thefirst character, this is a json function
+    #If the '#' symbol is the first character, this is a json function
     #Return without the first '#' or parenthesis
     if self.at(0) == '#'
       self.sub(/(#)/,'')
