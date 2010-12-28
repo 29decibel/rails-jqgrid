@@ -10,22 +10,22 @@ Usage Instructions:
 //For the grid
 <%= jqgrid(Model,[optional standard jqGrid options here])) %>
 
-Example (The odd HTML is Hobo DRYML)
+Example 
 =======
 
-#index.dryml
+#index.html
 
-<index-page>
-	<content-header:>
-		<%= jqgrid_theme("pepper-grinder") %>
-	</content-header:>
+<html>
+	<head>
+		<%= jqgrid_init) %>
+	</head>
 	
-	<content-body:>
+	<body:>
 		
 		<%= jqgrid(Log,:fields =>"exercise_type,duration_in_mins,date") %><br/>
 
-	</content-body:>
-</index-page>
+	</body>
+</html>
 
 =======
 Copyright (c) 2010 [name of plugin creator], released under the MIT license
