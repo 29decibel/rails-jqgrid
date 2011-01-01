@@ -10,8 +10,11 @@ class GridDataController < ApplicationController
     find[:order] = params["sidx"] + " " + params["sord"] unless params["sidx"].empty?
     conditions = filter_bar_conditions(fields,params)
     find[:conditions] = conditions unless conditions.empty?
+
+    find[:per_page] = params["rows"] || 20
+    find[:page] = params["page"] || 1
     
-    rows = model.find(:all,find)
+    rows = model.paginate(:all,find)
     row_count = model.count(:all,:conditions => find[:conditions])
     
     respond_with rows.to_jqgrid_json(
