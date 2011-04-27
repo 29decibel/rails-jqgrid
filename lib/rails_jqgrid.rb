@@ -65,12 +65,12 @@ module ActionView
           {#{opt[:pager_opt][:searchoptions]}}
           );
           // two buttons filter and clear filter
-          jQuery("##{opt[:id]}").jqGrid('navButtonAdd',"##{opt[:id]}_pager",{caption:"显示/隐藏过滤栏",title:"显示/隐藏过滤栏", buttonicon :'ui-icon-pin-s',
+          jQuery("##{opt[:id]}").jqGrid('navButtonAdd',"##{opt[:id]}_pager",{caption:"Show/Hide Filter",title:"Show/Hide Filter", buttonicon :'ui-icon-pin-s',
           	onClickButton:function(){
           		main_grid[0].toggleToolbar();          		
           	} 
           });
-          jQuery("##{opt[:id]}").jqGrid('navButtonAdd',"##{opt[:id]}_pager",{caption:"清除过滤",title:"清除过滤",buttonicon :'ui-icon-refresh',
+          jQuery("##{opt[:id]}").jqGrid('navButtonAdd',"##{opt[:id]}_pager",{caption:"ClearFilter",title:"ClearFilter",buttonicon :'ui-icon-refresh',
           	onClickButton:function(){
           		main_grid[0].clearToolbar();
           	} 
